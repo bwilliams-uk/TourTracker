@@ -1,7 +1,7 @@
 <?php
 namespace TourTracker\Services\Primary;
 
-abstract class BaseService{
+abstract class Service{
     protected $repository;
     protected $index;
 

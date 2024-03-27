@@ -16,7 +16,7 @@ use TourTracker\Utilities\TourDataExtractor\TourDataExtractor;
 use Exception;
 use StdClass;
 
-class DepartureReportingService extends BaseService{
+class DepartureReportingService extends Service{
 
     protected function init(){
         $this->DepartureService = $this->ServiceLoader->get('DepartureService');

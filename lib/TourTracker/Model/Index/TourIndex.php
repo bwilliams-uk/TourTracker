@@ -9,25 +9,13 @@ use TourTracker\Config;
 
 class TourIndex extends Index{
 
-    private $filterVariables = array(
-        'url'
+    protected $defaultBindings = array(
+        'syncLimit' => Config::SYNC_LIMIT
+        );
+
+    protected $filterVariables = array(
+        'url',
+        'syncDue'
     );
-
-    //Returns All tour Ids
-    public function all(){
-        return $this->processStatement();
-    }
-
-    //Returns Tour IDs by URL.
-    public function urlEquals($url){
-        $this->bindValue(":url",$url);
-        return $this->processStatement();
-    }
-
-    // Return Tour IDs where Sync is due.
-    public function syncDue(){
-        $this->bindValue(":syncLimit",Config::SYNC_LIMIT);
-        return $this->processStatement();
-    }
 
 }

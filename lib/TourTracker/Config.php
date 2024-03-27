@@ -16,6 +16,6 @@ class Config{
 
     // Optionally save data extracted from websites to a JSON file outside the database.
     const EXTRACTOR_JSON_BACKUP = true; // set true/false to enable backups
-    const EXTRACTOR_JSON_BACKUP_DIR = PROJECT_DIR."../tourtracker-extra/.extract_backup/";
+    const EXTRACTOR_JSON_BACKUP_DIR = PROJECT_DIR."/../tourtracker-extra/.extract_backup/";
 
 }

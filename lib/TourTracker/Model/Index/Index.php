@@ -4,68 +4,77 @@ Purpose: To provide base functionality to Index Classes.
 */
 
 namespace TourTracker\Model\Index;
-use ReflectionClass;
-use TourTracker\Utilities\SqlAdapt;
 use PDO;
 use Benchmarker\Benchmarker;
 
 class Index {
-    protected $pdo;
-    private $sqlAdapt;
+    private $pdo;
+    private $statement;
 
+    protected $idColumnIndex = 0;
+    protected $defaultBindings = array();
+    protected $filterVariables = array();
+
+    //Find the SQL file and make a prepared statement.
     public function __construct(PDO $pdo){
         $this->pdo = $pdo;
-        $rc = new ReflectionClass($this);
-        $className = $rc->getShortName();
-        $sql = __DIR__.'/sql/'.$className.'.sql';
-        $this->sqlAdapt = new SqlAdapt($pdo,$sql);
+        $className = get_class($this);
+        $classPieces = explode('\\',$className);
+        $className = end($classPieces);
+        $sqlFile = __DIR__.'/sql/'.$className.'.sql';
+        $sql = file_get_contents($sqlFile);
+        $this->statement = $pdo->prepare($sql);
+        $this->bindAssocArray($this->defaultBindings);
     }
 
-
-    /*
+    //Create an array with each filter variable set to a key. default value NULL.
     public function createFilter(){
         $filter = array();
-        foreach($this->variables as $v){
+        foreach($this->filterVariables as $v){
             $filter[$v] = null;
         }
         return $filter;
     }
-
+    // Bind filter variables to statement, return IDs as Array
     public function find($filter = null){
         $filter = $filter ?? $this->createFilter();
-        $stmt = $this->getPreparedStatement();
-        foreach($filter as $key=>$value){
-            $stmt->bindValue(":$key",$value);
+        if(!$this->validateFilter($filter)){
+            throw new Exeption("Index filter is not valid.");
         }
+        $this->bindAssocArray($filter);
+        $stmt = $this->statement;
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN,0);
-    }
-    */
-
-
-    //Return Array of IDs matching statement
-    protected function processStatement(){
-        $this->sqlAdapt->toString();
-        $stmt = $this->sqlAdapt->stmt();
-        $t = Benchmarker::createTimer("stmt");
-        $success = $stmt->execute();
-        $t->close();
-        if(!$success) return false;
-        return $stmt->fetchAll(PDO::FETCH_COLUMN,0);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN,$this->idColumnIndex);
     }
 
-    //Bind a value to the SQL Statement
-    protected function bindValue($label,$value){
-        return $this->sqlAdapt->bindValue($label,$value);
+    private function bindAssocArray($array){
+        $stmt = $this->statement;
+        foreach($array as $key=>$value){
+            $type = $this->identifyPdoType($value);
+            $stmt->bindValue(":$key",$value,$type);
+        }
     }
 
-    protected function removeComment($label){
-        $this->sqlAdapt->removeComment($label);
+    private function identifyPdoType($value){
+        if($value === null){
+            return PDO::PARAM_NULL;
+        }
+        elseif(is_int($value)){
+            return PDO::PARAM_INT;
+        }
+        else{
+            return PDO::PARAM_STR;
+        }
     }
 
-    //Removes all parameters/filters from SQL statement
-    public function reset(){
-        $this->sqlAdapt->reset();
+    private function validateFilter($filter){
+        $default = $this->createFilter();
+        $keysA = array_keys($default);
+        $keysB = array_keys($filter);
+        sort($keysA);
+        sort($keysB);
+        return ($keysA === $keysB);
     }
+
 
 }

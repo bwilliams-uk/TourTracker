@@ -8,19 +8,7 @@ namespace TourTracker\Model\Index;
 use PDO;
 class TourOperatorIndex extends Index{
 
-    private $filterVariables = array(
+    protected $filterVariables = array(
         'web'
     );
-
-
-    public function all(){
-        return $this->processStatement();
-    }
-
-    public function webSimilarTo($web){
-        $this->bindValue(":web",$web);
-        return $this->processStatement();
-    }
-
-
 }

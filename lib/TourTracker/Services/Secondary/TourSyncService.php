@@ -5,7 +5,7 @@ use TourTracker\Utilities\URL;
 use TourTracker\Utilities\TourDataExtractor\TourDataExtractor;
 use TourTracker\Utilities\TourDataExtractor\ExtractedDeparture;
 
-class TourSyncService extends BaseService{
+class TourSyncService extends Service{
 
     protected function init(){
         $this->TourService = $this->ServiceLoader->get('TourService');

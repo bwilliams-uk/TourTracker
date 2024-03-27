@@ -2,7 +2,7 @@
 namespace TourTracker\Services\Secondary;
 use TourTracker\Services\ServiceLoader;
 
-abstract class BaseService{
+abstract class Service{
     protected $ServiceLoader;
 
     public function __construct(ServiceLoader $ServiceLoader){

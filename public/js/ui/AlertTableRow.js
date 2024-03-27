@@ -18,10 +18,10 @@ export default class AlertTableRow {
     createDescription(){
         switch(this.alertType){
             case "AVAILABILITY REDUCED":
-                return this.newAvailability+" spaces remain";
+                return this.createSpacesRemainText(this.newAvailability);
                 break;
             case "AVAILABILITY INCREASED":
-                return this.newAvailability+" spaces remain";
+                return this.createSpacesRemainText(this.newAvailability);
                 break;
             case "PRICE REDUCED":
                 return this.priceChange;
@@ -31,6 +31,15 @@ export default class AlertTableRow {
             default:
                 return "";
                 break;
+        }
+    }
+
+    createSpacesRemainText(count){
+        if(count === 1){
+            return count+" space remaining";
+        }
+        else{
+            return count+" spaces remaining";
         }
     }
 

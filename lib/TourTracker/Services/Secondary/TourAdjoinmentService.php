@@ -13,7 +13,7 @@ use Benchmarker\Benchmarker;
 use StdClass;
 
 
-class TourAdjoinmentService extends BaseService{
+class TourAdjoinmentService extends Service{
 
     private $tourIds;
 

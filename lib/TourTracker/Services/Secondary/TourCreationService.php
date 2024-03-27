@@ -4,7 +4,7 @@ use TourTracker\Utilities\URL;
 use TourTracker\Utilities\TourDataExtractor\TourDataExtractor;
 use Exception;
 
-class TourCreationService extends BaseService{
+class TourCreationService extends Service{
 
     protected function init(){
         $this->TourService = $this->ServiceLoader->get('TourService');

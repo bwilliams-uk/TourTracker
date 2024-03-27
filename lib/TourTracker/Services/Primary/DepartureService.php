@@ -12,7 +12,7 @@ use Exception;
 use PDO;
 use Benchmarker\Benchmarker;
 
-class DepartureService extends BaseService{
+class DepartureService extends Service{
 
     public function createDepartureIfNotExists(Tour $tour, $startDate, $endDate){
         if(!$this->departureExists($tour,$startDate,$endDate)){
@@ -21,13 +21,11 @@ class DepartureService extends BaseService{
     }
 
     public function deleteByTourId($tourId){
-        /* Refactor to:
+
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tourId;
         $matches = $index->find($filter);
-        */
-        $matches = $this->index->tourIdEquals($tourId);
         $this->repository->remove($matches);
     }
 
@@ -39,18 +37,21 @@ class DepartureService extends BaseService{
         $this->setWatch($departureId, 0);
     }
 
+    private function setWatch($departureId,$val){
+        $departure = $this->repository->get($departureId);
+        if(!$departure) throw new Exception("Could not find departure with ID: $departureId");
+        $departure->setWatch($val);
+        $this->repository->save($departure);
+    }
 
     public function getDeparture(Tour $tour, $startDate, $endDate){
-        $matches = $this->index->byNaturalId($tour->getId(),$startDate,$endDate);
 
-        /*Refactor to:
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tour->getId();
         $filter['startDate'] = $startDate;
         $filter['endDate'] = $endDate;
         $matches = $index->find($filter);
-        */
 
         $count = count($matches);
         if ($count !== 1){
@@ -60,14 +61,11 @@ class DepartureService extends BaseService{
     }
 
     public function getAvailableDepartures($tourId){
-        /*Refactor to:
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tourId;
         $filter['available'] = 1;
         $matches = $index->find($filter);
-        */
-        $matches = $this->index->availableByTourId($tourId);
         return $this->repository->get($matches);
     }
 
@@ -80,23 +78,14 @@ class DepartureService extends BaseService{
     }
 
     private function departureExists(Tour $tour, $startDate, $endDate){
-        /*Refactor to:
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tour->getId();
         $filter['startDate'] = $startDate;
         $filter['endDate'] = $endDate;
         $matches = $index->find($filter);
-        */
-        $matches = $this->index->byNaturalId($tour->getId(),$startDate,$endDate);
         return (count($matches) === 1);
 
     }
 
-    private function setWatch($departureId,$val){
-        $departure = $this->repository->get($departureId);
-        if(!$departure) throw new Exception("Could not find departure with ID: $departureId");
-        $departure->setWatch($val);
-        $this->repository->save($departure);
-    }
 }

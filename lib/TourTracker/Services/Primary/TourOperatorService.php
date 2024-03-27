@@ -10,13 +10,18 @@ use TourTracker\Model\Repository\TourOperatorRepository;
 use TourTracker\Utilities\URL;
 use Exception;
 
-class TourOperatorService extends BaseService{
+class TourOperatorService extends Service{
 
     //Return the Operator Id/Object which the URL matches
     public function identifyOperatorByUrl(URL $url,$returnObject = false){
 
         $domain = $url->getHost();
-        $matches = $this->index->webSimilarTo($domain);
+
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['web'] = $domain;
+        $matches = $index->find($filter);
+
         $count = count($matches);
         if($count === 0){
              throw new Exception("Unknown Operator.");

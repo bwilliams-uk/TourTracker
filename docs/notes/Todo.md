@@ -1,15 +1,11 @@
 # TODO
 
-## MUST DO's for Putting ON CV
-[ ] Updated README
-[ ] Create Database Setup SQL File
-[ ] Initiate Git Repository
+
 
 ## Improvements to current scope
 [ ] Refactor JS - Use seperate HTML Pages?
 [ ] Optimise SQL Queries (views are slow) 
     [ ] migrate queries from using 'VDSR' to 'VDLS'
-[ ] Rethink design of Index Classes
 
 
 ## Additional features
@@ -23,6 +19,10 @@
 
 # DONE
 
+[X] Updated README
+[X] Create Database Setup SQL File
+[X] Initiate Git Repository
+[X] Rethink design of Index Classes
 ## Support for Intrepid API
 [X] Extract tour name
 [X] Extract Departures

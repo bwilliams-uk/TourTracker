@@ -3,7 +3,7 @@
 Include file for ../index.php (HTTP Access) and ../cron.php (Cron Job Executer).
 */
 
-define("PROJECT_DIR",dirname(__DIR__)); //Make the root project folder globally accessible.
+define("PROJECT_DIR",dirname(__DIR__).'/'); //Make the root project folder globally accessible.
 
 //Include Framework files
 

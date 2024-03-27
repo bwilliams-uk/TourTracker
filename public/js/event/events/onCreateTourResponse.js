@@ -3,7 +3,7 @@ var onCreateTourResponse = (app, data) => {
         app.UI.AddTourUtility.setTourUrlInputValue("");
         app.MacroService.run("updateTourInfo");
     } else {
-        alert("Failed to create tour: " + data.errorMessage);
+        alert("Failed to create tour: " + data.message);
     }
 }
 export default onCreateTourResponse;

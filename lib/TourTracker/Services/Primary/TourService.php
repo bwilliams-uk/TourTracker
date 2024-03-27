@@ -9,15 +9,21 @@ namespace TourTracker\Services\Primary;
 use TourTracker\Model\DomainObject\Tour;
 use Exception;
 
-class TourService extends BaseService{
+class TourService extends Service{
 
     public function tourUrlExists($urlText){
-        $matches = $this->index->urlEquals($urlText);
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['url'] = $urlText;
+        $matches = $index->find($filter);
         return (count($matches) > 0);
     }
 
     public function getTourIdsDueSync(){
-        return $this->index->syncDue();
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['syncDue'] = 1;
+        return $index->find($filter);
     }
 
     public function createTour($name,$url,$operatorId){

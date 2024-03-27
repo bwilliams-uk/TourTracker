@@ -11,7 +11,7 @@ use Benchmarker\Benchmarker;
 use Exception;
 use PDO;
 
-class DepartureUpdateService extends BaseService{
+class DepartureUpdateService extends Service{
 
     private $constructedAt;
 
@@ -20,7 +20,10 @@ class DepartureUpdateService extends BaseService{
     }
 
     public function deleteByTourId($tourId){
-        $matches = $this->index->tourIdEquals($tourId);
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['tourId'] = $tourId;
+        $matches = $index->find($filter);
         $this->repository->remove($matches);
     }
 
@@ -34,12 +37,19 @@ class DepartureUpdateService extends BaseService{
     }
 
     public function getLatestUpdates(){
-        $matches = $this->index->latest();
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['latest'] = 1;
+        $matches = $index->find($filter);
         return $this->repository->get($matches);
     }
 
     public function getLatestByDepartureId($id){
-        $matches = $this->index->departureIdEquals($id);
+        $index = $this->index;
+        $filter = $index->createFilter();
+        $filter['latest'] = 1;
+        $filter['departureId'] = $id;
+        $matches = $index->find($filter);
         $obj = $this->repository->get($matches[0]); // Index currently sorts created DESC
         return $obj;
     }

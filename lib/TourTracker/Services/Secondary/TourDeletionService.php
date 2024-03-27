@@ -1,7 +1,7 @@
 <?php
 namespace TourTracker\Services\Secondary;
 
-class TourDeletionService extends BaseService{
+class TourDeletionService extends Service{
 
     protected function init(){
         $this->DepartureUpdateService = $this->ServiceLoader->get('DepartureUpdateService');
