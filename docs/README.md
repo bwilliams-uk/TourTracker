@@ -24,19 +24,19 @@ The project is in ongoing development, however the current version offers proof 
 
 Tours View.
 
-![Screenshot](img\tourview.jpg)
+![Screenshot](img/tourview.jpg)
 
 Departures View for Trips to Bali.
 
-![Screenshot](img\2024-03-14-12-13-10-image.png)
+![Screenshot](img/2024-03-14-12-13-10-image.png)
 
 View price and availability History for a selected departure.
 
-![Screenshot](img\2024-03-14-12-13-25-image.png)
+![Screenshot](img/2024-03-14-12-13-25-image.png)
 
 Watchlist: view latest information for all watched departures.
 
-![Screenshot](img\2024-03-14-12-14-44-image.png)
+![Screenshot](img/2024-03-14-12-14-44-image.png)
 
 Alerts:
-![Screenshot](img\AlertsView.jpg)
+![Screenshot](img/AlertsView.jpg)
