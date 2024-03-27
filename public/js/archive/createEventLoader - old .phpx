@@ -1,0 +1,62 @@
+<?php
+/*
+DESCRIPTION:
+
+Executing this file will create a JavaScript file
+in this directory called "LoaderClass.js" where
+'LoaderClass' is specified by $loaderClassName in
+the configuration section below.
+
+This purpose if this class is to import and create an
+instance of all classes specified in a directory
+given by $importDirectory in the configuration section 
+below.
+
+
+
+*/
+
+
+//Configuration
+$loaderClassName = "EventLoader";
+$importDirectory = "reg";
+
+//Execution
+    $imports = [];
+    $objectConstructors = [];
+
+    $searchPath = __DIR__."/$importDirectory/*.js";
+    $files = glob($searchPath);
+    
+    //Create JavaScript text from files
+    foreach($files as $f){
+        $name = str_ireplace('.js','',basename($f));
+        $jsImportDir = "./$importDirectory/$name.js";
+        $imports[] = "import $name from \"$jsImportDir\";";
+        $objectConstructors[] = "new $name(app);";
+    }
+
+    $content = "";
+    
+    //Write import lines to content
+    foreach($imports as $i){
+        $content .="$i\n";
+    }
+    
+    //Write class and constructor definition to content
+    $content .= "\n";
+    $content.="export default class $loaderClassName{\n";
+    $content .="    constructor(app){\n";
+    
+    //Create an instance of each imported class
+    foreach($objectConstructors as $o){
+        $content .="        $o\n";
+    }
+
+    //Close the constructor method and class
+    $content .="    }\n";
+    $content .="}";
+    
+    //Write to file
+    $loaderFilePath = __DIR__."/$loaderClassName.js";
+    file_put_contents($loaderFilePath,$content);

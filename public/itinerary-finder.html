@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Itinerary Finder</title>
+    <script src="js/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: "calibri";
+            width: 800px;
+            margin: 0 auto;
+            border: solid;
+            padding: 10px;
+        }
+
+
+        label,
+        input,
+        p,
+        select {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+    <div id="form">
+        <h1>Itinerary Finder</h1>
+        <p>Find multiple tours that fit back-to-back within your travel dates.</p>
+        <label for="">Depart After</label>
+        <input id="start-date" type="date" />
+        <label>Return Before</label>
+        <input id="end-date" type="date">
+        <label>Tour 1</label>
+        <select id="tour-1"></select>
+        <label>Tour 2</label>
+        <select id="tour-2"></select>
+        <label>Tour 3</label>
+        <select id="tour-3"></select>
+        <label>Tour 4</label>
+        <select id="tour-4"></select>
+        <label>Tour 5</label>
+        <select id="tour-5"></select>
+        <label>Minimum days between tours</label>
+        <input id="min" type="number">
+        <label>Maximum days between tours</label>
+        <input id="max" type="number">
+        <button>Search</button>
+    </div>
+    <div id="result">
+    </div>
+    <script defer>
+        function processFormSubmit() {
+            var sub = {};
+            sub.start = document.getElementById("start-date").value;
+            sub.end = document.getElementById("end-date").value;
+            sub.tours = Array(
+                document.getElementById("tour-1").value,
+                document.getElementById("tour-2").value,
+                document.getElementById("tour-3").value,
+                document.getElementById("tour-4").value,
+                document.getElementById("tour-5").value);
+            sub.minInterval = document.getElementById("min").value;
+            sub.maxInterval = document.getElementById("max").value;
+            $.post("itineraries/find", sub, handleItineraryData);
+            sub.tours.forEach((id)=>getDepartureData(id));
+        }
+
+        function handleItineraryData(data) {
+            data = data.replaceAll("\n","<br>");
+            document.getElementById("result").innerHTML = data;
+        }
+
+        function createSelectOption(selectNode, value, text) {
+            var opt = document.createElement("option");
+            opt.setAttribute('value', value);
+            opt.innerHTML = text;
+            selectNode.appendChild(opt);
+        }
+
+        function addToAllSelects(value, text) {
+            var n = selects.length;
+            for (let i = 0; i < n; i++) {
+                createSelectOption(selects[i], value, text);
+            }
+        }
+
+        function handleTourData(data) {
+            var n = data.length;
+            for (let i = 0; i < n; i++) {
+                addToAllSelects(data[i].tour_id, data[i].tour_name);
+            }
+        }
+
+        function getDepartureData(tourId){
+        if(tourId !== "0"){
+        $.get('tour/'+tourId+'/departures');
+        }
+        }
+
+
+        //End of defintions
+
+        var btn = document.getElementsByTagName("button")[0];
+        btn.addEventListener("click", processFormSubmit);
+
+        var selects = document.getElementsByTagName("select");
+        addToAllSelects(0, "None");
+        $.get("report/tours", null, handleTourData);
+
+    </script>
+
+</body>
+
+</html>

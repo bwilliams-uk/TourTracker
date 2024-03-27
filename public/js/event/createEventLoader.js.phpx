@@ -1,0 +1,53 @@
+<?php
+//Configuration
+$loaderClassName = "EventLoader";
+$importDirectory = "events";
+
+//Execution
+    $imports = [];
+    $objectConstructors = [];
+    $fnConstructors = [];
+
+    $searchPath = __DIR__."/$importDirectory/*.js";
+    $files = glob($searchPath);
+
+    //Create JavaScript text from files
+    $n = 0;
+    foreach($files as $f){
+        $name = str_ireplace('.js','',basename($f));
+        $jsImportDir = "./$importDirectory/$name.js";
+        $imports[] = "import $name from \"$jsImportDir\";";
+        $fnConstructors[] = "var fn$n = (data) => $name(app,data);";
+        $objectConstructors[] = "service.register(\"$name\",fn$n);";
+        $n++;
+    }
+
+    $content = "";
+
+    //Write import lines to content
+    foreach($imports as $i){
+        $content .="$i\n";
+    }
+
+    //Write class and constructor definition to content
+    $content .= "\n";
+    $content.="export default class $loaderClassName{\n";
+    $content .="    constructor(app,service){\n";
+
+    //Create an instance of each imported class
+    foreach($fnConstructors as $f){
+        $content .="        $f\n";
+    }
+    $content .="\n";
+    //Create an instance of each imported class
+    foreach($objectConstructors as $o){
+        $content .="        $o\n";
+    }
+
+    //Close the constructor method and class
+    $content .="    }\n";
+    $content .="}";
+
+    //Write to file
+    $loaderFilePath = __DIR__."/$loaderClassName.js";
+    file_put_contents($loaderFilePath,$content);

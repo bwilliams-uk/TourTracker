@@ -1,0 +1,115 @@
+html {
+    background-color: #eee;
+}
+
+body {
+    box-shadow: 0px 0px 3px;
+    font-family: calibri;
+    max-width: 1200px;
+    margin: 20px auto;
+    border-radius:10px;
+    padding: 15px;
+    background-color: #fff;
+    min-height: 100%;
+}
+
+.view {
+    display: none;
+}
+
+button {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    background-color: dodgerblue;
+    color: white;
+}
+
+td > button {
+    width: 100%;
+}
+
+
+button:hover {
+    background-color: darkblue;
+}
+
+button.watch {
+    background-color: lightgray;
+}
+
+button.watch:hover{
+    background-color: gray;
+}
+
+button.watching {
+    background-color: darkorchid;
+    color: #fff;
+}
+
+a {
+    color: blue;
+}
+
+input {
+    padding: 5px;
+    width: 500px;
+}
+
+.tour-name {
+    cursor: pointer;
+}
+
+.tour-name:hover {
+    color: blue;
+}
+
+#departure-data {
+    font-size: 0.9em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr.unavailable {
+    color: lightgray;
+}
+
+th {
+    text-align: left;
+}
+
+td,
+th {
+    padding: 15px;
+    border: none;
+    border-bottom: solid;
+    border-width: 1px;
+    border-color:#999;
+}
+
+button.sync {
+    background-color: darkblue;
+}
+
+button.sync:hover {
+    background-color: grey;
+}
+
+button.syncing {
+    background-color: mediumseagreen;
+}
+
+button.delete {
+    background-color: #f66;
+}
+
+button.delete:hover {
+    background-color: brown;
+}
