@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Itinerary Finder</title>
-    <script src="js/jquery.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
     <style>
         body {
             font-family: "calibri";
@@ -33,6 +33,15 @@
         <p>Find multiple tours that fit back-to-back within your travel dates.</p>
         <label for="">Depart After</label>
         <input id="start-date" type="date" />
+        <label for="">Depart Within</label>
+        <select id='depart-within'>
+            <option value='7'>1 Week</option>
+            <option value='14' selected>2 Weeks</option>
+            <option value='21'>3 Weeks</option>
+            <option value='28'>4 Weeks</option>
+            <option value='56'>8 Weeks</option>
+            <option value='84'>12 Weeks</option>
+        </select>
         <label>Return Before</label>
         <input id="end-date" type="date">
         <label>Tour 1</label>
@@ -54,9 +63,24 @@
     <div id="result">
     </div>
     <script defer>
+
+        function setDefaultDateFields(){
+            var sd = document.getElementById("start-date");
+            var ed = document.getElementById("end-date");
+            var sdDefault = new Date(Date.now()+30*24*3600*1000); // 30 days from now
+            var edDefault = new Date(Date.now()+180*24*3600*1000); // 180 days from now
+            var sdFormat = sdDefault.toISOString().split('T')[0];
+            var edFormat = edDefault.toISOString().split('T')[0];
+            sd.value = sdFormat;
+            ed.value =edFormat;
+
+        }
+
+
         function processFormSubmit() {
             var sub = {};
             sub.start = document.getElementById("start-date").value;
+            sub.window = document.getElementById("depart-within").value;
             sub.end = document.getElementById("end-date").value;
             sub.tours = Array(
                 document.getElementById("tour-1").value,
@@ -66,7 +90,7 @@
                 document.getElementById("tour-5").value);
             sub.minInterval = document.getElementById("min").value;
             sub.maxInterval = document.getElementById("max").value;
-            $.post("itineraries/find", sub, handleItineraryData);
+            $.post("../itineraries/find", sub, handleItineraryData);
             sub.tours.forEach((id)=>getDepartureData(id));
         }
 
@@ -98,19 +122,21 @@
 
         function getDepartureData(tourId){
         if(tourId !== "0"){
-        $.get('tour/'+tourId+'/departures');
+        $.get('../tour/'+tourId+'/departures');
         }
         }
 
 
         //End of defintions
 
+        setDefaultDateFields();
+
         var btn = document.getElementsByTagName("button")[0];
         btn.addEventListener("click", processFormSubmit);
 
-        var selects = document.getElementsByTagName("select");
+        var selects = document.querySelectorAll("select[id^='tour-']");
         addToAllSelects(0, "None");
-        $.get("report/tours", null, handleTourData);
+        $.get("../report/tours", null, handleTourData);
 
     </script>
 

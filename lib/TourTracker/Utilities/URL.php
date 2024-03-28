@@ -1,11 +1,4 @@
 <?php
-/* Todo:
-Convert to a general URL class that can retrieve content
-and Identify the domain name.
-*/
-
-
-
 namespace TourTracker\Utilities;
 class URL{
     private $url;
@@ -24,7 +17,6 @@ class URL{
         return $a["host"] ?? null;
     }
 
-
     public function getContent()
     {
         if($this->content === null){
@@ -32,9 +24,6 @@ class URL{
         }
         return $this->content;
     }
-
-
-
 
     private function loadContent()
     {
@@ -49,33 +38,4 @@ class URL{
     }
 }
 
-/* OLD METHODS - TODO Put in appropriate classes
 
-        switch ($this->identifyOperator()){
-            case "G Adventures":
-                $tourExtractor = new operators\GAdventures\TourPage($content);
-                break;
-            default:
-                throw new Exception("Unable to create tour page object for this operator.");
-        }
-        return $tourExtractor;
-    }
-
-
-
-    public function identifyOperator($column = "name"){
-        $report = new OperatorReport();
-        $operators = $report->toEntities();
-        $url = $this->toString();
-
-        $returnValue = false;
-        foreach($operators as $operator){
-            if(stripos($url,$operator->getWeb()) !== false){
-                if($column == "name") $returnValue = $operator->getName();
-                if($column == "id") $returnValue = $operator->getId();
-            }
-        }
-        return $returnValue;
-        }
-}
-*/

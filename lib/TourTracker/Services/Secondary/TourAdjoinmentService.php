@@ -112,20 +112,25 @@ class TourAdjoinmentService extends Service{
 
     private function removeBadDates($departures,$timeConstraints){
         $cleaned = array();
-
+        $i = 0;
         foreach($departures as $tourDepartures){
+            $temp = $tourDepartures;
             if(isset($timeConstraints[0])){
-                $temp = $this->removeStartDatesBefore($timeConstraints[0],$tourDepartures);
+                $temp = $this->removeStartDatesBefore($timeConstraints[0],$temp);
             }
             else{
                 $temp = $tourDepartures;
             }
             if(isset($timeConstraints[1])){
-                $cleaned[] = $this->removeEndDatesAfter($timeConstraints[1],$temp);
+                $temp = $this->removeEndDatesAfter($timeConstraints[1],$temp);
             }
-            else{
-                $cleaned[] = $temp;
+
+            //Remove start dates after the latest departure date from first tour only.
+            if( ($i==0) && isset($timeConstraints[2])){
+                $temp = $this->removeStartDatesAfter($timeConstraints[2],$temp);
             }
+            $cleaned[] = $temp;
+            $i++;
         }
         return $cleaned;
     }
@@ -134,6 +139,16 @@ class TourAdjoinmentService extends Service{
         $cleaned = array();
         foreach($departures as $d){
             if($d->getStartDate() >= $date){
+                $cleaned[] = $d;
+            }
+        }
+        return $cleaned;
+    }
+
+    private function removeStartDatesAfter($date,$departures){
+        $cleaned = array();
+        foreach($departures as $d){
+            if($d->getStartDate() <= $date){
                 $cleaned[] = $d;
             }
         }

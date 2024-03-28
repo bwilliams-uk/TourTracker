@@ -32,24 +32,34 @@ class itineraries
     {
         $t1 = Benchmarker::createTimer("MAIN");
 
-        //header("content-type:application/json");
-        //echo json_encode($_POST,JSON_PRETTY_PRINT);
 
         // Load service
         $adj = $this->sl->get("TourAdjoinmentService");
-        $dus = $this->sl->get("DepartureUpdateService");
+        //$dus = $this->sl->get("DepartureUpdateService");
 
         // Remove Zeros from Posted IDs
         $ids = array_filter($_POST["tours"],function ($a){return ($a>0);});
+
         // Create Time constraint Array
-        $timeConstraints = array($_POST["start"],$_POST["end"]);
+        $earliestStart = $_POST['start'];
+        $latestEnd = $_POST['end'];
+        $latestStart = date_add(date_create($earliestStart),
+                                date_interval_create_from_date_string($_POST['window'].' days')
+                               );
+        $latestStart = date_format($latestStart,"Y-m-d");
+
+        $timeConstraints = array($earliestStart,$latestEnd,$latestStart);
+
         //Create Interval Array
         $interval = array($_POST["minInterval"],$_POST["maxInterval"]);
+
         //repeat for nTours - 1. UI does not yet support varying interval lengths.
         $interval = array_fill(0,count($ids)-1,$interval);
+
         //Create Itineraries
         $result = $adj->getItineraries($ids,$interval,$timeConstraints);
-        //Format to get JSON formatting with pricing data.
+
+        //Format to get JSON formatting with pricing data. -- REMOVE?
         //$result = $adj->format($result);
 
         header("content-type:text/plain;");
@@ -58,16 +68,16 @@ class itineraries
         foreach($result as $r){
             $first = $r[0];
             $last = end($r);
-            $cost = 0;
+            //$cost = 0;
             $depIds = array();
             foreach($r as $departure){
                 $id = $departure->getId();
                 $depIds[] = $id;
-                $update = $dus->getLatestByDepartureId($id);
-                $cost += $update->getPrice();
+                //$update = $dus->getLatestByDepartureId($id);
+                //$cost += $update->getPrice();
             }
             $depIds = implode(', ',$depIds);
-            echo $i.".\n First tour starts on ".$first->getStartDate()."\nLast tour ends on ".$last->getEndDate()."\n Departures: ($depIds)    Cost $cost \n\n";
+            echo $i.".\n First tour starts on ".$first->getStartDate()."\nLast tour ends on ".$last->getEndDate()."\n Departures: ($depIds) \n\n";
             $i++;
         }
 
