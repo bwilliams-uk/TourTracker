@@ -59,27 +59,18 @@ class itineraries
         //Create Itineraries
         $result = $adj->getItineraries($ids,$interval,$timeConstraints);
 
-        //Format to get JSON formatting with pricing data. -- REMOVE?
-        //$result = $adj->format($result);
 
-        header("content-type:text/plain;");
-        echo count($result)." result(s) found.\n\n";
-        $i = 1;
+        $itins = array();
         foreach($result as $r){
-            $first = $r[0];
-            $last = end($r);
-            //$cost = 0;
             $depIds = array();
             foreach($r as $departure){
                 $id = $departure->getId();
                 $depIds[] = $id;
-                //$update = $dus->getLatestByDepartureId($id);
-                //$cost += $update->getPrice();
             }
-            $depIds = implode(', ',$depIds);
-            echo $i.".\n First tour starts on ".$first->getStartDate()."\nLast tour ends on ".$last->getEndDate()."\n Departures: ($depIds) \n\n";
-            $i++;
+            $itins[] = $depIds;
         }
+        header("content-type:application/json;");
+        echo json_encode($itins,JSON_PRETTY_PRINT);
 
         $t1->close();
         Benchmarker::createReport();

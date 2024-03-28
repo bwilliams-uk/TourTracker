@@ -1,2 +1,2 @@
 Duration        Label
-0.062           MAIN
+0.048           MAIN
