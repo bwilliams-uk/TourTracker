@@ -4,12 +4,13 @@
 
 ## Improvements to current scope
 [ ] Refactor JS - Use seperate HTML Pages?
+[ ] Merge Itinerary Finder with main CSS and Javascript Package
+
 [ ] Optimise SQL Queries (views are slow) 
     [ ] migrate queries from using 'VDSR' to 'VDLS'
 
 
 ## Additional features
-[ ] Itinerary Finder
 [ ] Tool to import missing data from backup directory
 
 
@@ -19,6 +20,7 @@
 
 # DONE
 
+[X] Itinerary Finder Proof of concept
 [X] Updated README
 [X] Create Database Setup SQL File
 [X] Initiate Git Repository

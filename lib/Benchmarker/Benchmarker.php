@@ -1,31 +1,28 @@
 <?php
 namespace Benchmarker;
 class Benchmarker{
+    private static $outputFile = __DIR__.'/report.txt';
     private static $timers = array();
-    private static $reportDirectory = __DIR__.'/reports/';
+    private static $terminated = false;
 
     public static function createTimer($label){
-        $timer = new Timer();
-        $timer->label = $label;
-        $timer->start = microtime(true);
-        $timer->end = null;
+        $timer = new Timer($label);
         array_push(static::$timers,$timer);
         return $timer;
     }
 
-    public static function createReport(){
-        $data = str_pad("Duration",16)."Label\n";
-        foreach(static::$timers as $timer){
-            $d = str_pad($timer->getDuration(),16);
-            $l = $timer->label;
-            $data .= "$d$l\n";
-        }
-        //$fileName = time().'.txt';
-        //$path = static::$reportDirectory.$fileName;
-        $path = __DIR__."/report.txt";
-        file_put_contents($path,$data);
-
+    private static function createReport(){
+        $file = static::$outputFile;
+        $report = new Report();
+        $report->setOutputFilename($file);
+        $report->createFromTimers(static::$timers);
     }
 
-
+    public static function onTerminate(){
+        if(static::$terminated === true){
+            return true;
+        }
+        static::$terminated = true;
+        static::createReport();
+    }
 }

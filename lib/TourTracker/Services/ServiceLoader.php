@@ -39,7 +39,6 @@ use TourTracker\Services\Secondary\TourCreationService;
 use TourTracker\Services\Secondary\TourDeletionService;
 use TourTracker\Services\Secondary\TourSyncService;
 use TourTracker\Services\Secondary\TourAdjoinmentService;
-use TourTracker\Services\Secondary\DepartureReportingService;
 
 
 
@@ -111,9 +110,6 @@ class ServiceLoader{
                 break;
             case 'TourAdjoinmentService':
                 return new TourAdjoinmentService($this);
-                break;
-            case 'DepartureReportingService':
-                return new DepartureReportingService($this);
                 break;
             default:
                 throw new Exception("Service Loader unable to load '$serviceName'");

@@ -2,6 +2,7 @@
 namespace TourTracker\Model\Repository;
 use PDO;
 use Exception;
+use Benchmarker\Benchmarker;
 
 class Repository{
 
@@ -103,6 +104,7 @@ class Repository{
     }
 
     private function removeOne($mixed){
+        //$t = Benchmarker::createTimer(get_class($this).'::removeOne()');
         $class = $this->getDomainObjectClassName();
         $columnNames = $this->columnNames;
 
@@ -124,6 +126,7 @@ class Repository{
         $label = ':'.$columnNames[0];
         $stmt->bindValue($label,$id);
         $stmt->execute();
+        //$t->close();
     }
 
 

@@ -30,10 +30,27 @@ class itineraries
 
     public function find()
     {
+
+        /* TODO Replace below with service Wrapper:
+
+        header("content-type:application/json");
+
+        $ifs = $this->sl->get("ItineraryFinderService");
+        $ifs->setTours($_POST['tours]);
+        $ifs->setEarliestStartDate($_POST['start'];
+        $ifs->setDepartWindow($_POST['window']);
+        $ifs->setLastestEndDate($_POST['end']);
+        $ifs->addInterval($_POST['minInterval'],$_POST['maxInterval']);
+        $ifs->setOutputType('JSON');
+        echo $ifs->getItineraries();
+
+        */
+
         $t1 = Benchmarker::createTimer("MAIN");
 
         // Load service
         $adj = $this->sl->get("TourAdjoinmentService");
+
 
         // Remove Zeros from Posted IDs
         $ids = array_filter($_POST["tours"],function ($a){return ($a>0);});
@@ -69,7 +86,6 @@ class itineraries
         echo json_encode($result,JSON_PRETTY_PRINT);
 
         $t1->close();
-        Benchmarker::createReport();
     }
 
 

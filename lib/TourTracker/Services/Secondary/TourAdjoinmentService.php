@@ -195,11 +195,13 @@ class TourAdjoinmentService extends Service{
 
     // Creates itineraries when  not the first tour.
     private function itinsCreateSequential($itins,$departures,$intervals){
+        $t = Benchmarker::createTimer("itinsCreateSequential");
         $newItins = array();
         foreach ($departures as $dep)
         {
           $newItins = array_merge($newItins,$this->pushDepartureToItins($itins,$dep,$intervals));
         }
+        $t->close();
         return $newItins;
     }
 

@@ -7,6 +7,11 @@ class Timer{
     public $end;
     private $closed = false;
 
+    public function __construct($label){
+        $this->label = $label;
+        $this->start = microtime(true);
+        $this->end = null;
+    }
     public function close()
     {
         if($this->closed){
@@ -21,7 +26,10 @@ class Timer{
             throw new Exception("Timer '$this->label' has not been closed.");
         }
         $round = round($this->end - $this->start,3);
-		$round = ($round < 0.001) ? "< 0.001" : $round;
 		return $round;
+    }
+
+    public function __destruct(){
+        Benchmarker::onTerminate();
     }
 }

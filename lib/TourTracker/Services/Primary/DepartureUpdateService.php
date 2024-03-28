@@ -36,6 +36,7 @@ class DepartureUpdateService extends Service{
         $this->repository->save($update);
     }
 
+    //NOT IN USE
     public function getLatestUpdates(){
         $index = $this->index;
         $filter = $index->createFilter();
@@ -44,6 +45,7 @@ class DepartureUpdateService extends Service{
         return $this->repository->get($matches);
     }
 
+    // NOT IN USE
     public function getLatestByDepartureId($id){
         $index = $this->index;
         $filter = $index->createFilter();

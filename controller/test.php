@@ -52,16 +52,4 @@ class test
         var_dump($result);
     }
 
-    public function depreport(){
-        $ds = $this->sl->get("DepartureService");
-        $deps = $ds->getAvailableDepartures(6);
-        $s = $this->sl->get("DepartureReportingService");
-        $arr = array();
-        foreach($deps as $d){
-        $arr[] = $s->createReport($d);
-        }
-        header("content-type:application/json");
-        echo json_encode($arr,JSON_PRETTY_PRINT);
-    }
-
 }
