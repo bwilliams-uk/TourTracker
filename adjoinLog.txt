@@ -1,0 +1,2 @@
+Previous End: 2024-05-20. Start: 2024-05-26. Difference is 6 - OK.
+Previous End: 2024-06-01. Start: 2024-06-09. Difference is 8 - OK.

@@ -16,6 +16,7 @@ use StdClass;
 class TourAdjoinmentService extends Service{
 
     private $tourIds;
+    private $log = ""; // contains log data for debugging.
 
     protected function init(){
         //$this->TourService = $this->ServiceLoader->get('TourService');
@@ -63,16 +64,21 @@ class TourAdjoinmentService extends Service{
         return $itineraries; //multidimensional array( array($departure,$departure2,$departure3) )
     }
 
-    //Formats the result of this->getItineraries() as JSON with up to date departure info.
-    public function format($itineraries){
-        return $itineraries;
-
-        $output = new StdClass;
-        $output->itineraries = array();
-        foreach($itineraries as $i){
-            $output->itineraries[] = $this->formatItinerary($i);
+    //Formats the result of this->getItineraries() as JSON.
+    // FUTURE have a setOutputFormat() method then just call getItineraries per usual.
+    public function getItinerariesAsJson(){
+        $args = func_get_args();
+        $result = $this->getItineraries(...$args);
+        $itins = array();
+        foreach($result as $r){
+            $depIds = array();
+            foreach($r as $departure){
+                $id = $departure->getId();
+                $depIds[] = $id;
+            }
+            $itins[] = $depIds;
         }
-        return json_encode($output,JSON_PRETTY_PRINT);
+        return $itins;
     }
 
 
@@ -209,14 +215,21 @@ class TourAdjoinmentService extends Service{
             $fin = date_create($preceedingDeparture->getEndDate());
             $start = date_create($dep->getStartDate());
             $difference = date_diff($fin,$start);
-            $difference = intval($difference->format("%a"));
+            $difference = intval($difference->format("%r%a"));
             if(($difference >= $min) && ($difference <= $max)){
                 array_push($i,$dep);
                 $newItins[] = $i;
-                //echo $preceedingDeparture->getEndDate().' -> '.$dep->getStartDate()." ---- diff($difference) ---- OK \n";
             }
         }
         //print_r($newItins);
         return $newItins;
+    }
+
+    private function log($text){
+        $this->log .= $text."\n";
+    }
+
+    public function __destruct(){
+        //file_put_contents(PROJECT_DIR.'/adjoinLog.txt',$this->log);
     }
 }

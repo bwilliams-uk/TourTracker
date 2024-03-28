@@ -10,6 +10,7 @@ v.duration_days,
 v.price,
 v.availability,
 v.sync_date,
+v.sync_days_ago,
 v.watch
 FROM view_departure_sync_recent v
 WHERE 1=1

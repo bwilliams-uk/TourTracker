@@ -32,21 +32,27 @@ class itineraries
     {
         $t1 = Benchmarker::createTimer("MAIN");
 
-
         // Load service
         $adj = $this->sl->get("TourAdjoinmentService");
-        //$dus = $this->sl->get("DepartureUpdateService");
 
         // Remove Zeros from Posted IDs
         $ids = array_filter($_POST["tours"],function ($a){return ($a>0);});
 
         // Create Time constraint Array
+
+            //Date add function - NOTE should live elsewhere.
+        $addDaysToDate = function($dateString,$days){
+            $date = date_create($dateString);
+            $interval = $days.' days';
+            $interval = date_interval_create_from_date_string($interval);
+            $outputDate = date_add($date,$interval);
+            $formatted = date_format($outputDate,"Y-m-d");
+            return $formatted;
+        };
+
         $earliestStart = $_POST['start'];
         $latestEnd = $_POST['end'];
-        $latestStart = date_add(date_create($earliestStart),
-                                date_interval_create_from_date_string($_POST['window'].' days')
-                               );
-        $latestStart = date_format($latestStart,"Y-m-d");
+        $latestStart = $addDaysToDate($earliestStart,$_POST['window']);
 
         $timeConstraints = array($earliestStart,$latestEnd,$latestStart);
 
@@ -57,20 +63,10 @@ class itineraries
         $interval = array_fill(0,count($ids)-1,$interval);
 
         //Create Itineraries
-        $result = $adj->getItineraries($ids,$interval,$timeConstraints);
+        $result = $adj->getItinerariesAsJson($ids,$interval,$timeConstraints);
 
-
-        $itins = array();
-        foreach($result as $r){
-            $depIds = array();
-            foreach($r as $departure){
-                $id = $departure->getId();
-                $depIds[] = $id;
-            }
-            $itins[] = $depIds;
-        }
         header("content-type:application/json;");
-        echo json_encode($itins,JSON_PRETTY_PRINT);
+        echo json_encode($result,JSON_PRETTY_PRINT);
 
         $t1->close();
         Benchmarker::createReport();

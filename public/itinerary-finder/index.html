@@ -10,22 +10,50 @@
             font-family: "calibri";
             width: 800px;
             margin: 0 auto;
+            margin-bottom:50px;
             border: solid;
-            border-top:none;
+            border-top: none;
             padding: 10px;
+        }
+
+        label{
+            font-weight:bold;
         }
 
 
         label,
         input,
+        button,
         p,
         select {
             display: block;
             margin-bottom: 15px;
+            padding: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: solid;
+            border-width: 1px;
+            padding: 5px;
         }
 
     </style>
-<script src="ItineraryProcessor.js" type="text/javascript"></script>
+    <script src="FormSubmissionHandler.js" type="text/javascript"></script>
+    <script src="ItineraryProcessor.js" type="text/javascript"></script>
+    <script src="ItineraryResultFormatter.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -64,57 +92,18 @@
     <div id="result">
     </div>
     <script defer>
-
-        function setDefaultDateFields(){
+        //TODO move the following functions into a FormInitiator Class
+        function setDefaultDateFields() {
             var sd = document.getElementById("start-date");
             var ed = document.getElementById("end-date");
-            var sdDefault = new Date(Date.now()+30*24*3600*1000); // 30 days from now
-            var edDefault = new Date(Date.now()+180*24*3600*1000); // 180 days from now
+            var sdDefault = new Date(Date.now() + 30 * 24 * 3600 * 1000); // 30 days from now
+            var edDefault = new Date(Date.now() + 180 * 24 * 3600 * 1000); // 180 days from now
             var sdFormat = sdDefault.toISOString().split('T')[0];
             var edFormat = edDefault.toISOString().split('T')[0];
             sd.value = sdFormat;
-            ed.value =edFormat;
+            ed.value = edFormat;
 
         }
-
-
-        function getTourIdsFromSelects(){
-            var selects = document.querySelectorAll("select[id^='tour-']");
-            var n = selects.length;
-            var array = [];
-            for(let i = 0; i < n; i++){
-                if(selects[i].value !== "0"){
-                    array.push(parseInt(selects[i].value));
-                }
-            }
-            return array;
-        }
-
-        function getDataFromForm(){
-            var sub = {};
-            sub.start = document.getElementById("start-date").value;
-            sub.window = document.getElementById("depart-within").value;
-            sub.end = document.getElementById("end-date").value;
-            sub.tours = getTourIdsFromSelects();
-            sub.minInterval = document.getElementById("min").value;
-            sub.maxInterval = document.getElementById("max").value;
-            return sub;
-        }
-
-        function processFormSubmit() {
-            var sub = getDataFromForm();
-            var ip = new ItineraryProcessor();
-            ip.setTourSequence(sub.tours);
-            window.ip = ip;
-
-            var callback = (data)=>{
-                ip.receiveItineraryData(data);
-            }
-
-            $.post("../itineraries/find", sub, callback);
-            sub.tours.forEach((id)=>getDepartureData(ip,id));
-        }
-
 
         function createSelectOption(selectNode, value, text) {
             var opt = document.createElement("option");
@@ -137,12 +126,7 @@
             }
         }
 
-        function getDepartureData(ipObject, tourId){
-            var callback =function(data){
-                ipObject.receiveDepartureData(tourId,data);
-            }
-            $.get('../tour/'+tourId+'/departures',null,callback);
-        }
+
 
 
         //End of defintions
@@ -150,7 +134,8 @@
         setDefaultDateFields();
 
         var btn = document.getElementsByTagName("button")[0];
-        btn.addEventListener("click", processFormSubmit);
+        var handler = new FormSubmissionHandler();
+        btn.addEventListener("click", () => handler.onSubmit());
 
         var selects = document.querySelectorAll("select[id^='tour-']");
         addToAllSelects(0, "None");
