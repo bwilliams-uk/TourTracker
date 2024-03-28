@@ -3,6 +3,7 @@ export default class TourTableRow {
         this.EventService = EventService;
         this.tourId = null;
         this.tourName = "";
+        this.tourDuration = null;
         this.tourOperator = "";
         this.tourUrl = "";
         this.syncAvailable = false;
@@ -12,6 +13,7 @@ export default class TourTableRow {
     buildElement() {
         var element = document.createElement("tr");
         element.appendChild(this.buildTourNameCell());
+        element.appendChild(this.buildTourDurationCell());
         element.appendChild(this.buildTourOperatorCell());
         element.appendChild(this.buildViewCell());
         element.appendChild(this.buildSyncCell());
@@ -26,6 +28,11 @@ export default class TourTableRow {
         link.setAttribute("href", this.tourUrl);
         link.setAttribute("target", "_blank");
         element.appendChild(link);
+        return element;
+    }
+    buildTourDurationCell() {
+        var element = document.createElement("td");
+        element.innerHTML = this.tourDuration+' days';
         return element;
     }
 

@@ -34,6 +34,8 @@ class ItineraryResultFormatter{
 
         var n = info.length;
         for(let i = 0; i < n; i++){
+
+
             var price = parseFloat(info[i].price);
             agg.totalCost += price; // Add price to total cost
 

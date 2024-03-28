@@ -1,0 +1,69 @@
+html {
+    background-color: #eee;
+}
+
+body {
+    box-shadow: 0px 0px 3px;
+    font-family: calibri;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #fff;
+    min-height: 100%;
+}
+
+label {
+    font-weight: bold;
+}
+
+button {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    background-color: dodgerblue;
+    color: white;
+}
+button:hover {
+    background-color: darkblue;
+}
+
+
+label,
+input,
+p,
+select {
+    display: block;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+td,
+th {
+    border: solid;
+    border-width: 1px;
+    padding: 5px;
+}
+
+#result > div {
+    border-bottom: solid;
+    padding: 15px;
+    margin: 5px;
+}

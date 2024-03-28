@@ -5,58 +5,14 @@
     <meta charset="UTF-8">
     <title>Itinerary Finder</title>
     <script src="../js/jquery.min.js"></script>
-    <style>
-        body {
-            font-family: "calibri";
-            width: 800px;
-            margin: 0 auto;
-            margin-bottom:50px;
-            border: solid;
-            border-top: none;
-            padding: 10px;
-        }
-
-        label{
-            font-weight:bold;
-        }
-
-
-        label,
-        input,
-        button,
-        p,
-        select {
-            display: block;
-            margin-bottom: 15px;
-            padding: 5px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        td,
-        th {
-            border: solid;
-            border-width: 1px;
-            padding: 5px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
     <script src="FormSubmissionHandler.js" type="text/javascript"></script>
     <script src="ItineraryProcessor.js" type="text/javascript"></script>
     <script src="ItineraryResultFormatter.js" type="text/javascript"></script>
 </head>
 
 <body>
+   <a href="../">Return to Tours</a>
     <div id="form">
         <h1>Itinerary Finder</h1>
         <p>Find multiple tours that fit back-to-back within your travel dates.</p>
@@ -91,57 +47,7 @@
     </div>
     <div id="result">
     </div>
-    <script defer>
-        //TODO move the following functions into a FormInitiator Class
-        function setDefaultDateFields() {
-            var sd = document.getElementById("start-date");
-            var ed = document.getElementById("end-date");
-            var sdDefault = new Date(Date.now() + 30 * 24 * 3600 * 1000); // 30 days from now
-            var edDefault = new Date(Date.now() + 180 * 24 * 3600 * 1000); // 180 days from now
-            var sdFormat = sdDefault.toISOString().split('T')[0];
-            var edFormat = edDefault.toISOString().split('T')[0];
-            sd.value = sdFormat;
-            ed.value = edFormat;
-
-        }
-
-        function createSelectOption(selectNode, value, text) {
-            var opt = document.createElement("option");
-            opt.setAttribute('value', value);
-            opt.innerHTML = text;
-            selectNode.appendChild(opt);
-        }
-
-        function addToAllSelects(value, text) {
-            var n = selects.length;
-            for (let i = 0; i < n; i++) {
-                createSelectOption(selects[i], value, text);
-            }
-        }
-
-        function handleTourData(data) {
-            var n = data.length;
-            for (let i = 0; i < n; i++) {
-                addToAllSelects(data[i].tour_id, data[i].tour_name);
-            }
-        }
-
-
-
-
-        //End of defintions
-
-        setDefaultDateFields();
-
-        var btn = document.getElementsByTagName("button")[0];
-        var handler = new FormSubmissionHandler();
-        btn.addEventListener("click", () => handler.onSubmit());
-
-        var selects = document.querySelectorAll("select[id^='tour-']");
-        addToAllSelects(0, "None");
-        $.get("../report/tours", null, handleTourData);
-
-    </script>
+    <script src="FormInitiator.js"></script>
 
 </body>
 

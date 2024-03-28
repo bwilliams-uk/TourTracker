@@ -4,7 +4,7 @@ export default class TourTable {
     constructor(EventService) {
         this.EventService = EventService;
         this.rows = [];
-        this.columns = ["Tour", "Operator", "", "",""];
+        this.columns = ["Tour","Duration", "Operator", "", "",""];
         this.destinationNode = null;
     }
     createRow() {

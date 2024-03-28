@@ -8,6 +8,7 @@ var updateTourInfo = (app, data) => {
         for (let i = 0; i < nTours; i++) {
             var row = table.createRow();
             row.tourName = data[i].tour_name;
+            row.tourDuration = data[i].duration_days;
             row.tourOperator = data[i].operator_name; //TODO set to operator name
             row.tourId = data[i].tour_id;
             row.tourUrl = data[i].tour_url;

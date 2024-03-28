@@ -55,6 +55,7 @@ class ItineraryProcessor{
         container.innerHTML = itineraryCount+" result(s) found.<br><br>";
         for(let i = 0; i < itineraryCount; i++){
             var data = this.getItineraryData(this.itineraries[i]);
+            console.log(data);
             var formatter = new ItineraryResultFormatter(data);
             var element = formatter.createElement();
             container.appendChild(element);
