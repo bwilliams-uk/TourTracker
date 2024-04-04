@@ -7,7 +7,8 @@ const DEFAULT_CONTROLLER_METHOD = "main";
 const CONTROLLER_NAMESPACE = "controller";
 const TIMEZONE = "Europe/London";
 
-
+//Set directory for Composer Packages
+const COMPOSER_LOADER = __DIR__.'/../vendor/autoload.php';
 
 
 /*

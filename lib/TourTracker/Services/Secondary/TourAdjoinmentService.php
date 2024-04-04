@@ -59,7 +59,12 @@ class TourAdjoinmentService extends Service{
         $itineraries = array();
 
         foreach($departures as $tourDepartures){
-        $itineraries  = $this->addTour($itineraries,$tourDepartures,$intervals);
+            //Return empty array if no departures for the tour, no itineraries are possible.
+            if(count($tourDepartures) === 0){
+                $itineraries = array();
+                break;
+            }
+            $itineraries  = $this->addTour($itineraries,$tourDepartures,$intervals);
         }
         return $itineraries; //multidimensional array( array($departure,$departure2,$departure3) )
     }

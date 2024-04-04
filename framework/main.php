@@ -14,4 +14,10 @@ require_once('autoload.php');
 require_once("RewriteRule.php");
 require_once('Route.php');
 require_once('Launcher.php');
+
+// Include Composer Autoloader if setup
+
+if(file_exists(config::COMPOSER_LOADER)){
+    include_once(COMPOSER_LOADER);
+}
 ?>

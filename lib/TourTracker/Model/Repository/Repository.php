@@ -1,6 +1,7 @@
 <?php
 namespace TourTracker\Model\Repository;
 use PDO;
+use PDOStatement;
 use Exception;
 use Benchmarker\Benchmarker;
 
@@ -11,20 +12,23 @@ class Repository{
 
     private $pdo;
     private $statements;
-    private $entityName;
     private $cache = array();
+
+    // Abstract properites - set in child class.
+    protected $tableName = "";
+    protected $columnNames = array();
 
     public function __construct(PDO $pdo){
 
         $this->pdo = $pdo;
+
+        //Prepare basic CRUD Statements
         $statements = array();
         $statements["INSERT"] = $pdo->prepare($this->createInsertStatementSql());
         $statements["DELETE"] = $pdo->prepare($this->createDeleteStatementSql());
         $statements["SELECT"] = $pdo->prepare($this->createSelectStatementSql());
         $statements["UPDATE"] = $pdo->prepare($this->createUpdateStatementSql());
         $this->statements = $statements;
-
-        $this->entityName = $this->getEntityName();
     }
 
     public function get($identifiers){
@@ -33,34 +37,6 @@ class Repository{
         }
         else{
             return $this->getOne($identifiers);
-        }
-    }
-
-    private function getMultiple($ids){
-        $result = array();
-        foreach($ids as $id){
-            $result[] = $this->getOne($id);
-        }
-        return $result;
-    }
-
-    private function getOne($id){
-        if(isset($this->cache[$id])){
-            return $this->cache[$id];
-        }
-        $columnNames = $this->columnNames;
-        $label = ':'.$columnNames[0];
-        $stmt = $this->statements["SELECT"];
-        $stmt->bindValue($label,$id);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
-        if($result){
-            $object = $this->createDomainObjectFromResult($result);
-            $this->cache[$id] = $object;
-            return $object;
-        }
-        else{
-            return false;
         }
     }
 
@@ -97,6 +73,78 @@ class Repository{
         }
     }
 
+    public function filter(array $criteria = array()){
+        //throw new Exception ("Not yet implemented");
+        $sql = $this->createFilterStatementSql($criteria);
+        $stmt = $this->pdo->prepare($sql);
+        $this->bindFilterCriteriaToStatement($stmt,$criteria);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_OBJ);
+        if($results){
+            return $this->createDomainObjectsFromMultipleResults($results);
+        }
+        else{
+            return false;
+        }
+    }
+
+    private function createFilterStatementSQL($criteria){
+        $tableName = $this->getTableName();
+        $columnNames = $this->columnNames;
+
+        $columns = implode(', ',$columnNames);
+        $column = $columnNames[0]; // ID Column
+        $value = ':'.$column;
+        $sql = "SELECT $columns FROM $tableName ";
+        $sql .= $this->createFilterWhereClause($criteria);
+        return $sql;
+
+    }
+
+    private function createFilterWhereClause($criteria){
+        if(count($criteria) === 0){
+            return '';
+        }
+        $wheres = [];
+        foreach(array_keys($criteria) as $c){
+            $wheres[] =  $this->camelToSnake($c).' = :'.$c;
+        }
+        $wheres = implode(' AND ',$wheres);
+        return 'WHERE '.$wheres;
+    }
+
+    private function bindFilterCriteriaToStatement(PDOStatement $statement,$criteria){
+        foreach($criteria as $k=>$v){
+                $statement->bindValue(':'.$k,$v);
+        }
+    }
+
+    private function getMultiple($ids){
+        $result = array();
+        foreach($ids as $id){
+            $result[] = $this->getOne($id);
+        }
+        return $result;
+    }
+
+    private function getOne($id){
+        if(isset($this->cache[$id])){
+            return $this->cache[$id];
+        }
+        $columnNames = $this->columnNames;
+        $label = ':'.$columnNames[0];
+        $stmt = $this->statements["SELECT"];
+        $stmt->bindValue($label,$id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        if($result){
+            return $this->createDomainObjectFromResult($result);
+        }
+        else{
+            return false;
+        }
+    }
+
     private function removeMultiple($identifiers){
         foreach($identifiers as $i){
             $this->removeOne($i);
@@ -104,7 +152,6 @@ class Repository{
     }
 
     private function removeOne($mixed){
-        //$t = Benchmarker::createTimer(get_class($this).'::removeOne()');
         $class = $this->getDomainObjectClassName();
         $columnNames = $this->columnNames;
 
@@ -126,7 +173,6 @@ class Repository{
         $label = ':'.$columnNames[0];
         $stmt->bindValue($label,$id);
         $stmt->execute();
-        //$t->close();
     }
 
 
@@ -205,7 +251,18 @@ class Repository{
             $callable = array($obj,$methodName);
             call_user_func($callable,$value);
         }
+        $getIdMethodName = $this->getGetterMethodName($this->columnNames[0]);
+        $id = call_user_func(array($obj,$getIdMethodName));
+        $this->cache[$id] = $obj;
         return $obj;
+    }
+
+    private function createDomainObjectsFromMultipleResults($results){
+        $array = [];
+        foreach($results as $r){
+            $array[] = $this->createDomainObjectFromResult($r);
+        }
+        return $array;
     }
 
     private function assertDomainObjectClassExists(){
@@ -230,6 +287,17 @@ class Repository{
         $pieces = explode('_',strtolower($string));
         $pieces = array_map('ucfirst',$pieces);
         return implode('',$pieces);
+    }
+
+    private function camelToSnake($string){
+        $capitals = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        for ($i = 0; $i < 26; $i++)
+        {
+            $string = str_replace($capitals[$i],'_'.$capitals[$i],$string);
+        }
+        $string = strtolower($string);
+        $string = trim($string,'_');
+        return $string;
     }
 
     // TODO move to general functions file

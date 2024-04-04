@@ -10,6 +10,7 @@ Not required for the applications operation.
 namespace controller;
 
 use TourTracker\TourTracker;
+use TourTracker\Model\Repository\DepartureRepository;
 use TourTracker\Services\ServiceLoader;
 use TourTracker\Utilities\TourDataExtractor\TourDataExtractor;
 use TourTracker\Utilities\URL;
@@ -25,8 +26,16 @@ class test
         $app = new TourTracker();
         $pdo =  $app->createPdo();
         $this->sl = new ServiceLoader($pdo);
+        $this->pdo = $pdo;
     }
 
+    public function reptest(){
+        header("content-type:text/plain");
+        $r = new DepartureRepository($this->pdo);
+        // $r->setFilterOperator('startDate','<='); //~Todo Change operator type
+        $tours = $r->filter(["tourId"=>6,"startDate"=>"2024-03-31"]);
+        var_dump($tours);
+    }
 
     public function extractor()
     {

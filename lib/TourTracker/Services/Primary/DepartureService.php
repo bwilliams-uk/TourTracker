@@ -22,6 +22,10 @@ class DepartureService extends Service{
 
     public function deleteByTourId($tourId){
 
+       /* Refactor to this?
+        $departures = $this->repository->filter(['tourId'=>$tourId]);
+        $this->repository->remove($departures);
+        */
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tourId;
@@ -46,13 +50,18 @@ class DepartureService extends Service{
 
     public function getDeparture(Tour $tour, $startDate, $endDate){
 
+        /* Refactor to this?
+        $tourId = $tour->getId();
+        $filter = ['tourId'=>$tourId,'startDate'=>$startDate,'endDate'=>$endDate];
+        $departures = $this->repository->filter($filter);
+        */
+
         $index = $this->index;
         $filter = $index->createFilter();
         $filter['tourId'] = $tour->getId();
         $filter['startDate'] = $startDate;
         $filter['endDate'] = $endDate;
         $matches = $index->find($filter);
-
         $count = count($matches);
         if ($count !== 1){
             throw new Exception("Expected to find 1 departure matching criteria: $count found.");

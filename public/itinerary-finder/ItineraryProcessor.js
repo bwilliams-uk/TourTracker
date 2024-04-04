@@ -67,6 +67,9 @@ class ItineraryProcessor{
         var n = departureIds.length;
         for(let i = 0; i < n; i++){
             data[i] = this.departureData[i][departureIds[i]];
+            if(!data[i]){
+                throw new Error(`Could not find departure data for tour at index ${i} with departure id ${departureIds[i]}`);
+            }
         }
         return data;
     }
