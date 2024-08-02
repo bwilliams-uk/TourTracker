@@ -44,4 +44,5 @@ The project is in ongoing development, however the current version offers proof 
 ![Screenshot](img/AlertsView.jpg)
 
 **Itinerary Finder**
+
 ![Screenshot](img/ItineraryFinder.jpg)
